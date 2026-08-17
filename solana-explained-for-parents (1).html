@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A letter about Solana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@500;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF3F6;
+    --paper-alt:#E3EBF1;
+    --ink:#1E2A44;
+    --ink-soft:#4A5872;
+    --red:#C1443C;
+    --blue:#2E5C8C;
+    --note:#F0C954;
+    --note-ink:#5C4712;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#c9d2da;
+    font-family:'Special Elite', 'Courier New', monospace;
+    color:var(--ink);
+  }
+  .sheet{
+    max-width:760px;
+    margin:40px auto;
+    background:var(--paper);
+    position:relative;
+    box-shadow:0 20px 50px rgba(20,30,50,0.25);
+  }
+  .airmail-border{
+    height:14px;
+    background:repeating-linear-gradient(
+      -45deg,
+      var(--red) 0 18px,
+      var(--paper) 18px 28px,
+      var(--blue) 28px 46px,
+      var(--paper) 46px 56px
+    );
+  }
+  .page{
+    padding:44px 52px 30px;
+  }
+  .page.alt{
+    background:var(--paper-alt);
+  }
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:26px;
+  }
+  .to-line{
+    font-family:'Caveat', cursive;
+    font-size:26px;
+    color:var(--ink-soft);
+    line-height:1.3;
+  }
+  .stamp{
+    width:92px;
+    flex:0 0 92px;
+    border:2px dashed var(--ink-soft);
+    padding:10px;
+    text-align:center;
+    transform:rotate(4deg);
+    background:var(--paper);
+  }
+  .stamp .label{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:9px;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .stamp svg{width:100%;height:auto;display:block;}
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:28px;
+    line-height:1.25;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .dateline{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:30px;
+  }
+  .salutation{
+    font-size:19px;
+    margin-bottom:18px;
+  }
+  p.body-text{
+    font-size:16px;
+    line-height:1.85;
+    margin:0 0 20px;
+  }
+  .eyebrow{
+    font-family:'Caveat', cursive;
+    font-size:22px;
+    color:var(--red);
+    transform:rotate(-2deg);
+    display:inline-block;
+    margin:0 0 6px;
+  }
+  .jargon{
+    text-decoration:line-through;
+    text-decoration-color:var(--red);
+    text-decoration-thickness:2px;
+    color:var(--ink-soft);
+  }
+  .translate{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:20px;
+    color:var(--red);
+    white-space:nowrap;
+  }
+  .diagram{
+    margin:30px 0 34px;
+    display:flex;
+    gap:24px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .diagram-col{
+    text-align:center;
+    flex:1;
+    min-width:200px;
+  }
+  .diagram-col .cap{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+  .arrow-word{
+    font-family:'Caveat', cursive;
+    font-size:24px;
+    color:var(--blue);
+  }
+  table.compare{
+    width:100%;
+    border-collapse:collapse;
+    margin:24px 0 30px;
+    font-size:14px;
+  }
+  table.compare th{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-align:left;
+    padding:8px 10px;
+    border-bottom:2px solid var(--ink);
+  }
+  table.compare td{
+    padding:12px 10px;
+    border-bottom:1px solid #c7d0d9;
+    vertical-align:top;
+    line-height:1.5;
+  }
+  table.compare td.old{color:var(--ink-soft);}
+  table.compare td.new{color:var(--ink); font-weight:normal;}
+  table.compare tr td:first-child{font-weight:normal; color:var(--ink);}
+  .signoff{
+    margin-top:6px;
+  }
+  .signature{
+    font-family:'Caveat', cursive;
+    font-size:34px;
+    color:var(--blue);
+    margin-top:8px;
+  }
+  .sticky{
+    background:var(--note);
+    color:var(--note-ink);
+    padding:20px 22px;
+    margin-top:34px;
+    transform:rotate(-1deg);
+    box-shadow:3px 4px 8px rgba(0,0,0,0.15);
+    font-family:'Caveat', cursive;
+    font-size:19px;
+    line-height:1.5;
+  }
+  .sticky .ps-label{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--note-ink);
+    margin-bottom:8px;
+  }
+  .footer-fold{
+    height:10px;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);
+  }
+  @media (max-width:600px){
+    .page{padding:30px 22px 22px;}
+    h1{font-size:22px;}
+    header.top{flex-direction:column-reverse; gap:14px;}
+    .stamp{align-self:flex-end;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="airmail-border"></div>
+
+  <div class="page">
+    <header class="top">
+      <div class="to-line">To: Mom &amp; Dad<br>(and anyone else who nods politely when I say "Solana")</div>
+      <div class="stamp" aria-hidden="true">
+        <div class="label">Postage</div>
+        <svg viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="26" fill="none" stroke="#2E5C8C" stroke-width="2"/>
+          <path d="M18 34 L26 22 L34 30 L42 18" fill="none" stroke="#2E5C8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="42" cy="18" r="2.4" fill="#C1443C"/>
+        </svg>
+      </div>
+    </header>
+
+    <h1>A letter explaining what "Solana" actually is</h1>
+    <div class="dateline">August 17, 2026</div>
+
+    <div class="salutation">Dear Mom and Dad,</div>
+
+    <p class="body-text">
+      You've heard me say "Solana" a dozen times now and I can tell you're just nodding along, so let me actually explain it properly — no jargon, promise. And when jargon sneaks in anyway, I'll cross it out and write what I actually mean right next to it, like this:
+      <br><br>
+      <span class="eyebrow">what is it, really</span><br>
+      A <span class="jargon">blockchain</span> <span class="translate">→ shared notebook</span> is basically a notebook that keeps track of who owns what. Normally, one company keeps that notebook locked in a drawer — a bank, say — and you just have to trust them to write it down correctly and never lose it. Solana flips that. Instead of one drawer, there are thousands of identical copies of the same notebook, sitting on computers all over the world. Every time someone wants to add a new entry, all those computers check it and agree it's correct before it becomes permanent. Nobody can quietly erase a page or fudge a number, because everyone else's copy would disagree.
+    </p>
+
+    <div class="diagram" role="img" aria-label="Diagram comparing one bank keeping a private notebook in a locked drawer versus Solana where thousands of computers each keep an identical copy of the same notebook.">
+      <div class="diagram-col">
+        <svg viewBox="0 0 160 140" width="140">
+          <rect x="40" y="50" width="80" height="70" fill="none" stroke="#4A5872" stroke-width="2.5"/>
+          <polygon points="40,50 80,20 120,50" fill="none" stroke="#4A5872" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="70" y="85" width="20" height="35" fill="none" stroke="#4A5872" stroke-width="2"/>
+          <circle cx="72" cy="102" r="1.8" fill="#4A5872"/>
+          <rect x="52" y="62" width="14" height="16" fill="none" stroke="#4A5872" stroke-width="1.5"/>
+          <rect x="94" y="62" width="14" height="16" fill="none" stroke="#4A5872" stroke-width="1.5"/>
+        </svg>
+        <div class="cap">one bank, one notebook,<br>one locked drawer</div>
+      </div>
+      <div class="arrow-word">vs.</div>
+      <div class="diagram-col">
+        <svg viewBox="0 0 200 140" width="180">
+          <g fill="none" stroke="#2E5C8C" stroke-width="2">
+            <rect x="15" y="20" width="30" height="22" rx="2"/>
+            <rect x="85" y="10" width="30" height="22" rx="2"/>
+            <rect x="155" y="24" width="30" height="22" rx="2"/>
+            <rect x="30" y="90" width="30" height="22" rx="2"/>
+            <rect x="100" y="100" width="30" height="22" rx="2"/>
+            <rect x="165" y="85" width="30" height="22" rx="2"/>
+          </g>
+          <g stroke="#9AAAC0" stroke-width="1.3" stroke-dasharray="3 3">
+            <line x1="45" y1="31" x2="85" y2="21"/>
+            <line x1="115" y1="21" x2="155" y2="35"/>
+            <line x1="45" y1="31" x2="30" y2="90"/>
+            <line x1="100" y1="21" x2="100" y2="100"/>
+            <line x1="115" y1="31" x2="165" y2="85"/>
+            <line x1="60" y1="101" x2="100" y2="111"/>
+            <line x1="130" y1="111" x2="165" y2="96"/>
+          </g>
+        </svg>
+        <div class="cap">thousands of copies,<br>everyone checks each other</div>
+      </div>
+    </div>
+
+    <p class="body-text">
+      <span class="eyebrow">why anyone built this</span><br>
+      The first notebooks like this — Bitcoin came first, in 2009, then Ethereum in 2015 — proved the idea actually works. But they're slow and get expensive once a lot of people use them at the same time, kind of like a small-town post office trying to sort every package in the country by hand. Solana <span class="jargon">launched in 2020</span> <span class="translate">→ built to handle the crowd</span> was built specifically to not fall over under that kind of load — same idea, shared notebook nobody owns, just engineered to process thousands of entries every second, for a fraction of a cent each.
+    </p>
+  </div>
+
+  <div class="page alt">
+    <p class="body-text">
+      <span class="eyebrow">what people actually do with it</span><br>
+      This is the part that made it click for me, so here's the honest comparison:
+    </p>
+
+    <table class="compare">
+      <tr><th>Doing this</th><th>The old way</th><th>The Solana way</th></tr>
+      <tr>
+        <td>Sending $200 to family in another country</td>
+        <td class="old">Bank wire: 1&ndash;3 days, ~$25&ndash;45 in fees</td>
+        <td class="new">About a second, less than a cent</td>
+      </tr>
+      <tr>
+        <td>Proving you own a ticket or collectible</td>
+        <td class="old">Only exists in one company's private database</td>
+        <td class="new">Lives in the shared notebook itself &mdash; no single company can delete it</td>
+      </tr>
+      <tr>
+        <td>Buying or selling something online</td>
+        <td class="old">Bank, app store, or reseller all take a cut in the middle</td>
+        <td class="new">The notebook itself handles the trade &mdash; fewer middlemen taking fees</td>
+      </tr>
+    </table>
+
+    <p class="body-text">
+      That's really the appeal &mdash; not "mysterious internet money," but a notebook that's fast, cheap, and hard for any one party to rig. Turns out that's useful anytime two people want to exchange something and don't want, or can't afford, someone sitting in the middle.
+    </p>
+
+    <p class="body-text">
+      So next time I mention "building something on Solana," now you know what I mean: I'm writing entries into a very fast, very cheap, shared notebook that nobody owns and thousands of computers keep honest.
+    </p>
+
+    <p class="body-text signoff">Love you both,</p>
+    <div class="signature">Your kid</div>
+
+    <div class="sticky">
+      <div class="ps-label">P.S. &mdash; two more words you'll hear</div>
+      <span class="jargon" style="text-decoration-color:#5C4712;">wallet</span> <span class="translate" style="color:#5C4712;">→ the app that holds your spot in the notebook</span>, kind of like a bank app, except you're the bank.<br><br>
+      <span class="jargon" style="text-decoration-color:#5C4712;">token</span> <span class="translate" style="color:#5C4712;">→ one entry in the notebook</span> that stands for something &mdash; money, a ticket, an item in a game, anything.
+    </div>
+  </div>
+
+  <div class="footer-fold"></div>
+  <div class="airmail-border"></div>
+</div>
+</body>
+</html>
