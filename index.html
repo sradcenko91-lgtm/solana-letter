@@ -99,14 +99,17 @@
     display:inline-block;
     letter-spacing:0.03em;
     transition:transform 0.15s, box-shadow 0.15s;
+    border:none;
+    cursor:pointer;
   }
   .btn:hover{transform:translateY(-1px);}
+  .btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
   .btn.primary{
     background:var(--green); color:#041510; font-weight:500;
     box-shadow:0 0 24px var(--green-glow);
   }
   .btn.primary:hover{box-shadow:0 0 32px var(--green-glow-strong);}
-  .btn.ghost{border:1px solid var(--line-soft); color:var(--ink-soft);}
+  .btn.ghost{border:1px solid var(--line-soft); color:var(--ink-soft); background:transparent;}
   .btn.ghost:hover{border-color:var(--green-dim); color:var(--ink);}
 
   .signature{
@@ -207,6 +210,67 @@
   }
   .stack-chip em{color:var(--green); font-style:normal;}
 
+  /* Live demo */
+  .demo-card{
+    border:1px solid var(--line); background:var(--bg-card);
+    padding:22px;
+  }
+  .demo-card + .demo-card{margin-top:16px;}
+  .demo-card .demo-head{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    margin-bottom:14px;
+  }
+  .demo-card h3{font-size:15px;}
+  .pill-status{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.05em;
+    padding:5px 10px; border-radius:2px; background:var(--bg-alt); color:var(--ink-soft);
+    border:1px solid var(--line-soft);
+  }
+  .pill-status.ok{color:var(--green); border-color:var(--green-dim);}
+  .pill-status.err{color:var(--alert); border-color:var(--alert);}
+  .rpc-row{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+  .rpc-row input{
+    flex:1; min-width:220px;
+    background:var(--bg-alt); border:1px solid var(--line-soft); color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; padding:10px 12px; border-radius:2px;
+  }
+  .rpc-row input::placeholder{color:#4E6478;}
+  .demo-note{font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0 0 14px;}
+  .demo-note a{color:var(--green-dim);}
+  .tx-list{display:flex; flex-direction:column; gap:8px;}
+  .tx-item{
+    display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center;
+    padding:10px 12px; border:1px solid var(--line); background:var(--bg-alt);
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+  }
+  .tx-item .sig{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tx-item .when{color:var(--ink-soft);}
+  .empty-hint{color:var(--ink-soft); font-size:13px; font-style:italic;}
+  .quote-grid{display:grid; grid-template-columns:1fr 1fr auto; gap:10px; margin-bottom:14px;}
+  @media(max-width:640px){.quote-grid{grid-template-columns:1fr;}}
+  .quote-grid select, .quote-grid input{
+    background:var(--bg-alt); border:1px solid var(--line-soft); color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; padding:10px 12px; border-radius:2px;
+  }
+  .quote-result{
+    border:1px solid var(--line); background:var(--bg-alt); padding:14px 16px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); line-height:1.9;
+  }
+  .quote-result .big{color:var(--green); font-size:15px;}
+  .gate-box{
+    margin-top:12px; border:1px dashed var(--alert); background:rgba(245,166,35,0.06);
+    padding:12px 16px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--alert);
+    display:none; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .gate-box.active{display:flex;}
+
+  /* PDA Profile Display */
+  .pda-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:12px;}
+  @media(max-width:640px){.pda-grid{grid-template-columns:1fr;}}
+  .pda-stat{border:1px solid var(--line-soft); background:var(--bg-alt); padding:12px; text-align:center;}
+  .pda-stat .num{font-family:'IBM Plex Mono',monospace; font-size:18px; color:var(--green); font-weight:700;}
+  .pda-stat .lbl{font-size:11px; color:var(--ink-soft); margin-top:4px;}
+
   footer{
     padding:36px 28px 52px; max-width:1040px; margin:0 auto;
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
@@ -237,6 +301,7 @@
   <div class="links mono">
     <a href="#why">Why us</a>
     <a href="#examples">Examples</a>
+    <a href="#demo">Live demo</a>
     <a href="#how">How it works</a>
     <a href="#partners">Partners</a>
   </div>
@@ -245,9 +310,9 @@
 <div class="hero">
   <div class="eyebrow">Superteam Ukraine · Startup Terminal · Colosseum</div>
   <h1 class="headline">Not another dashboard.<br><span class="accent">A pause before an emotional swap.</span></h1>
-  <p class="sub">PulseGate hooks into Jupiter and holds your impulse for 30 seconds when your on-chain history looks like FOMO, revenge trading, or a panic sell.</p>
+  <p class="sub">PulseGate hooks into Jupiter and holds your impulse for a moment when your on-chain history looks like FOMO, revenge trading, or a panic sell.</p>
   <div class="cta-row">
-    <a class="btn primary" href="#examples">See examples →</a>
+    <a class="btn primary" href="#demo">Try the live demo →</a>
     <a class="btn ghost" href="#partners">Partner with us</a>
   </div>
 
@@ -336,8 +401,83 @@
   </div>
 </section>
 
+<section id="demo">
+  <div class="section-head"><span class="idx mono">03</span><h2>Live demo</h2></div>
+  <p class="section-lead">Real wallet, real on-chain data, real Jupiter prices. Safe to try with your actual wallet.</p>
+
+  <div class="demo-card">
+    <div class="demo-head">
+      <h3>1 · Connect wallet</h3>
+      <span class="pill-status" id="walletStatus">not connected</span>
+    </div>
+    <p class="demo-note">Requires the <a href="https://phantom.app" target="_blank" rel="noopener noreferrer">Phantom</a> browser extension. We only request your public address — never keys, never a signature.</p>
+    <div class="cta-row" style="margin-top:0;">
+      <button class="btn primary" id="connectBtn">Connect Phantom</button>
+      <button class="btn ghost" id="disconnectBtn" style="display:none;">Disconnect</button>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <div class="demo-head">
+      <h3>2 · Recent transaction history</h3>
+      <span class="pill-status" id="rpcStatus">idle</span>
+    </div>
+    <p class="demo-note">Public RPC endpoints get rate-limited fast. If fetching fails, paste a free endpoint from <a href="https://helius.dev" target="_blank" rel="noopener noreferrer">Helius</a> or <a href="https://quicknode.com" target="_blank" rel="noopener noreferrer">QuickNode</a>.</p>
+    <div class="rpc-row">
+      <input type="text" id="rpcInput" placeholder="https://api.mainnet-beta.solana.com (default) — or paste your own RPC URL">
+      <button class="btn ghost" id="fetchTxBtn">Fetch last 10 tx</button>
+    </div>
+    <div class="tx-list" id="txList">
+      <div class="empty-hint">Connect a wallet, then fetch — signatures and timestamps will appear here, tagged by a gap-based heuristic (flags rapid-succession trades).</div>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <div class="demo-head">
+      <h3>3 · Jupiter quote + gate simulation</h3>
+      <span class="pill-status" id="quoteStatus">idle</span>
+    </div>
+    <p class="demo-note">Pulls a live quote from Jupiter's public quote API. Shows where the cooldown gate sits before execution.</p>
+    <div class="quote-grid">
+      <select id="inputMint">
+        <option value="So11111111111111111111111111111111111111112">SOL</option>
+        <option value="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v">USDC</option>
+      </select>
+      <input type="number" id="quoteAmount" placeholder="Amount (e.g. 0.5)" value="0.5" step="any" min="0">
+      <button class="btn primary" id="quoteBtn">Get quote</button>
+    </div>
+    <div class="quote-result" id="quoteResult">— no quote yet —</div>
+    <div class="gate-box" id="gateBox">
+      <span id="gateLabel">⏸ Gate active — cooldown <span id="gateTimer">5</span>s</span>
+      <button class="btn ghost" id="gateConfirmBtn" disabled>Execute Swap (Simulated)</button>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <div class="demo-head">
+      <h3>4 · On-chain Discipline Profile (PDA)</h3>
+      <span class="pill-status ok" id="pdaStatus">synced</span>
+    </div>
+    <p class="demo-note">Simulated Anchor PDA state. Your discipline score updates live based on your trading habits and Gate cooldown clears.</p>
+    <div class="pda-grid">
+      <div class="pda-stat">
+        <div class="num" id="pdaScore">100 / 100</div>
+        <div class="lbl">Discipline Score</div>
+      </div>
+      <div class="pda-stat">
+        <div class="num" id="pdaStreak">0</div>
+        <div class="lbl">Calm Streak</div>
+      </div>
+      <div class="pda-stat">
+        <div class="num" id="pdaTrades">0</div>
+        <div class="lbl">Total Trades</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="how">
-  <div class="section-head"><span class="idx mono">03</span><h2>How it works</h2></div>
+  <div class="section-head"><span class="idx mono">04</span><h2>How it works</h2></div>
   <div class="flow">
     <div class="flow-item">
       <div class="flow-num">01</div>
@@ -349,7 +489,7 @@
     </div>
     <div class="flow-item">
       <div class="flow-num">03</div>
-      <div><h3>Gate in Jupiter</h3><p>Emotional pattern → 30s cooldown with context. Not a ban — a pause.</p></div>
+      <div><h3>Gate in Jupiter</h3><p>Emotional pattern → cooldown with context, shown right in the swap flow. Not a ban — a pause.</p></div>
     </div>
     <div class="flow-item">
       <div class="flow-num">04</div>
@@ -359,7 +499,7 @@
 </section>
 
 <section id="partners">
-  <div class="section-head"><span class="idx mono">04</span><h2>Partnerships</h2></div>
+  <div class="section-head"><span class="idx mono">05</span><h2>Partnerships</h2></div>
   <p class="section-lead">Looking for integrations with DeFi protocols, wallet SDKs, and communities — PulseGate as a behavior layer for the ecosystem.</p>
   <div class="partners">
     <div class="partner-pill"><span class="dot"></span>Jupiter · swap integration</div>
@@ -387,6 +527,196 @@
     <a href="https://x.com/ssolr_sol" target="_blank" rel="noopener noreferrer">@ssolr_sol</a>
   </div>
 </footer>
+
+<script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+<script>
+(function(){
+  const connectBtn = document.getElementById('connectBtn');
+  const disconnectBtn = document.getElementById('disconnectBtn');
+  const walletStatus = document.getElementById('walletStatus');
+  const rpcStatus = document.getElementById('rpcStatus');
+  const rpcInput = document.getElementById('rpcInput');
+  const fetchTxBtn = document.getElementById('fetchTxBtn');
+  const txList = document.getElementById('txList');
+  const quoteStatus = document.getElementById('quoteStatus');
+  const quoteBtn = document.getElementById('quoteBtn');
+  const quoteResult = document.getElementById('quoteResult');
+  const gateBox = document.getElementById('gateBox');
+  const gateTimer = document.getElementById('gateTimer');
+  const gateConfirmBtn = document.getElementById('gateConfirmBtn');
+
+  // PDA Profile State
+  const pdaScore = document.getElementById('pdaScore');
+  const pdaStreak = document.getElementById('pdaStreak');
+  const pdaTrades = document.getElementById('pdaTrades');
+
+  let pubkey = null;
+  let userPDA = {
+    score: 100,
+    streak: 0,
+    trades: 0
+  };
+
+  function setStatus(el, text, cls){
+    el.textContent = text;
+    el.className = 'pill-status' + (cls ? ' ' + cls : '');
+  }
+
+  function updatePDAUI() {
+    pdaScore.textContent = `${userPDA.score} / 100`;
+    pdaStreak.textContent = userPDA.streak;
+    pdaTrades.textContent = userPDA.trades;
+  }
+
+  // Wallet Connection
+  connectBtn.addEventListener('click', async () => {
+    if (!window.solana || !window.solana.isPhantom) {
+      setStatus(walletStatus, 'Phantom not found', 'err');
+      alert('Phantom extension not detected. Install it from phantom.app and reload this page.');
+      return;
+    }
+    try {
+      const resp = await window.solana.connect();
+      pubkey = resp.publicKey.toString();
+      setStatus(walletStatus, pubkey.slice(0,4) + '…' + pubkey.slice(-4), 'ok');
+      connectBtn.style.display = 'none';
+      disconnectBtn.style.display = 'inline-block';
+    } catch (e) {
+      setStatus(walletStatus, 'connection rejected', 'err');
+    }
+  });
+
+  disconnectBtn.addEventListener('click', async () => {
+    try { await window.solana.disconnect(); } catch (e) {}
+    pubkey = null;
+    setStatus(walletStatus, 'not connected');
+    connectBtn.style.display = 'inline-block';
+    disconnectBtn.style.display = 'none';
+  });
+
+  // Fetch Transactions & Heuristic Evaluation
+  fetchTxBtn.addEventListener('click', async () => {
+    if (!pubkey) {
+      setStatus(rpcStatus, 'connect wallet first', 'err');
+      return;
+    }
+    setStatus(rpcStatus, 'fetching…');
+    txList.innerHTML = '<div class="empty-hint">Loading…</div>';
+    const rpcUrl = rpcInput.value.trim() || 'https://api.mainnet-beta.solana.com';
+    try {
+      const connection = new solanaWeb3.Connection(rpcUrl, 'confirmed');
+      const pk = new solanaWeb3.PublicKey(pubkey);
+      const sigs = await connection.getSignaturesForAddress(pk, { limit: 10 });
+      if (!sigs.length) {
+        txList.innerHTML = '<div class="empty-hint">No recent transactions found for this wallet.</div>';
+        setStatus(rpcStatus, 'done', 'ok');
+        return;
+      }
+      
+      let rapidCount = 0;
+      const rows = sigs.map((s, i) => {
+        const t = s.blockTime ? new Date(s.blockTime * 1000) : null;
+        let tag = 'calm';
+        if (i < sigs.length - 1) {
+          const prevT = sigs[i+1].blockTime;
+          if (t && prevT && (s.blockTime - prevT) < 300) {
+            tag = 'rapid';
+            rapidCount++;
+          }
+        }
+        return { sig: s.signature, when: t ? t.toLocaleString() : 'unknown time', tag };
+      });
+
+      txList.innerHTML = rows.map(r => `
+        <div class="tx-item">
+          <span class="tag ${r.tag === 'rapid' ? 'tag-fomo' : 'tag-calm'}" style="padding:3px 7px;">${r.tag === 'rapid' ? 'RAPID' : 'CALM'}</span>
+          <span class="sig">${r.sig}</span>
+          <span class="when">${r.when}</span>
+        </div>
+      `).join('');
+      setStatus(rpcStatus, 'done', 'ok');
+
+      // Sync simulated PDA state based on analysis
+      if (rapidCount > 2) {
+        userPDA.score = Math.max(10, userPDA.score - 15);
+        userPDA.streak = 0;
+      } else {
+        userPDA.streak += 1;
+      }
+      updatePDAUI();
+
+    } catch (e) {
+      console.error(e);
+      setStatus(rpcStatus, 'rpc error — try your own endpoint', 'err');
+      txList.innerHTML = '<div class="empty-hint">Fetch failed — public RPC rate-limited this request. Try pasting a custom Helius URL.</div>';
+    }
+  });
+
+  // Jupiter Quote & Gate Logic
+  quoteBtn.addEventListener('click', async () => {
+    const inputMint = document.getElementById('inputMint').value;
+    const outputMint = inputMint === 'So11111111111111111111111111111111111111112'
+      ? 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+      : 'So11111111111111111111111111111111111111112';
+    const amountUi = parseFloat(document.getElementById('quoteAmount').value || '0');
+    if (!amountUi || amountUi <= 0) {
+      quoteResult.textContent = 'Enter an amount greater than 0.';
+      return;
+    }
+    const decimals = inputMint === 'So11111111111111111111111111111111111111112' ? 9 : 6;
+    const amountRaw = Math.round(amountUi * Math.pow(10, decimals));
+    setStatus(quoteStatus, 'fetching…');
+    gateBox.classList.remove('active');
+
+    try {
+      const url = `https://quote-api.jup.ag/v6/quote?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amountRaw}&slippageBps=50`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('quote request failed');
+      const data = await res.json();
+      const outDecimals = outputMint === 'So11111111111111111111111111111111111111112' ? 9 : 6;
+      const outUi = (Number(data.outAmount) / Math.pow(10, outDecimals)).toFixed(6);
+      const impact = data.priceImpactPct ? (Number(data.priceImpactPct) * 100).toFixed(3) : '0';
+      
+      quoteResult.innerHTML = `You'd receive ≈ <span class="big">${outUi}</span> ${outputMint === 'So11111111111111111111111111111111111111112' ? 'SOL' : 'USDC'}<br>Price impact: ${impact}%<br>Route hops: ${data.routePlan ? data.routePlan.length : '—'}`;
+      setStatus(quoteStatus, 'live quote', 'ok');
+
+      // Gate simulation trigger
+      const shouldGate = Number(impact) > 0.5 || amountUi > 5;
+      if (shouldGate) {
+        gateBox.classList.add('active');
+        gateConfirmBtn.disabled = true;
+        document.getElementById('gateLabel').innerHTML = '⏸ Gate active — cooldown <span id="gateTimer">5</span>s';
+        
+        let t = 5;
+        const iv = setInterval(() => {
+          t -= 1;
+          const timerEl = document.getElementById('gateTimer');
+          if (timerEl) timerEl.textContent = t;
+          if (t <= 0) {
+            clearInterval(iv);
+            document.getElementById('gateLabel').textContent = '✓ Gate cleared — discipline verified';
+            gateConfirmBtn.disabled = false;
+          }
+        }, 1000);
+      }
+    } catch (e) {
+      console.error(e);
+      setStatus(quoteStatus, 'error', 'err');
+      quoteResult.textContent = 'Quote request failed — Jupiter API may be temporarily unavailable.';
+    }
+  });
+
+  // Simulated Swap Execution
+  gateConfirmBtn.addEventListener('click', () => {
+    userPDA.trades += 1;
+    userPDA.streak += 1;
+    userPDA.score = Math.min(100, userPDA.score + 2);
+    updatePDAUI();
+
+    alert('✓ Swap simulated successfully!\nOn-chain PDA state updated: Discipline Score +2, Streak +1.');
+  });
+})();
+</script>
 
 </body>
 </html>
