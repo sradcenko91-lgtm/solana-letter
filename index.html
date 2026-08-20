@@ -433,9 +433,9 @@
       <h3>1 · Connect wallet</h3>
       <span class="pill-status" id="walletStatus">not connected</span>
     </div>
-    <p class="demo-note">Requires the <a href="https://phantom.app" target="_blank" rel="noopener noreferrer">Phantom</a> browser extension. We only request your public address — never keys, never a signature.</p>
+    <p class="demo-note">Supports Jupiter Wallet, Phantom, Solflare, Backpack &amp; other Solana Standard Wallets. Read-only connection.</p>
     <div class="cta-row" style="margin-top:0;">
-      <button class="btn primary" id="connectBtn">Connect Phantom</button>
+      <button class="btn primary" id="connectBtn">Connect Jupiter Wallet</button>
       <button class="btn ghost" id="disconnectBtn" style="display:none;">Disconnect</button>
     </div>
   </div>
@@ -620,6 +620,7 @@
   const pdaTrades = document.getElementById('pdaTrades');
 
   let pubkey = null;
+  let activeWalletProvider = null;
   let userPDA = { score: 100, streak: 0, trades: 0 };
 
   function setStatus(el, text, cls){
@@ -633,26 +634,51 @@
     pdaTrades.textContent = userPDA.trades;
   }
 
+  // Universal Solana Provider Lookup (Jupiter, Phantom, Solflare, Backpack)
+  function getSolanaProvider() {
+    if (window.jupiter) return window.jupiter;
+    if (window.solana && window.solana.isJupiter) return window.solana;
+    if (window.solana) return window.solana;
+    if (window.solflare) return window.solflare;
+    if (window.backpack) return window.backpack;
+    return null;
+  }
+
   connectBtn.addEventListener('click', async () => {
-    if (!window.solana || !window.solana.isPhantom) {
-      setStatus(walletStatus, 'Phantom not found', 'err');
-      alert('Phantom extension not detected. Install it from phantom.app and reload this page.');
+    const provider = getSolanaProvider();
+    if (!provider) {
+      setStatus(walletStatus, 'wallet not found', 'err');
+      alert('No Solana wallet detected. Please install Jupiter Wallet, Phantom, or Solflare extension.');
       return;
     }
+
     try {
-      const resp = await window.solana.connect();
-      pubkey = resp.publicKey.toString();
-      setStatus(walletStatus, pubkey.slice(0,4) + '…' + pubkey.slice(-4), 'ok');
+      setStatus(walletStatus, 'connecting…');
+      activeWalletProvider = provider;
+      const resp = await activeWalletProvider.connect();
+      
+      const rawPk = resp.publicKey ? resp.publicKey.toString() : (activeWalletProvider.publicKey ? activeWalletProvider.publicKey.toString() : null);
+      if (!rawPk) throw new Error('Public key not retrieved');
+
+      pubkey = rawPk;
+      const walletName = activeWalletProvider.isJupiter ? 'Jupiter' : (activeWalletProvider.isPhantom ? 'Phantom' : 'Wallet');
+      setStatus(walletStatus, `${walletName}: ${pubkey.slice(0,4)}…${pubkey.slice(-4)}`, 'ok');
       connectBtn.style.display = 'none';
       disconnectBtn.style.display = 'inline-block';
     } catch (e) {
-      setStatus(walletStatus, 'connection rejected', 'err');
+      console.error(e);
+      setStatus(walletStatus, 'rejected', 'err');
     }
   });
 
   disconnectBtn.addEventListener('click', async () => {
-    try { await window.solana.disconnect(); } catch (e) {}
+    try { 
+      if (activeWalletProvider && activeWalletProvider.disconnect) {
+        await activeWalletProvider.disconnect(); 
+      }
+    } catch (e) {}
     pubkey = null;
+    activeWalletProvider = null;
     setStatus(walletStatus, 'not connected');
     connectBtn.style.display = 'inline-block';
     disconnectBtn.style.display = 'none';
