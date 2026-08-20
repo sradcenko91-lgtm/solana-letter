@@ -34,8 +34,7 @@
     content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
     background:
       radial-gradient(ellipse 60% 40% at 20% -5%, var(--green-glow-strong), transparent 60%),
-      radial-gradient(ellipse 50% 50% at 80% 15%, rgba(20,241,149,0.06), transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(5,11,16,0.5), var(--bg));
+      radial-gradient(ellipse 50% 50% at 80% 15%, rgba(20,241,149,0.06), transparent 50%);
   }
   .mono{font-family:'IBM Plex Mono', monospace;}
   h1,h2,h3{font-family:'Space Grotesk', sans-serif; margin:0;}
@@ -81,36 +80,40 @@
     transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1); border:none; cursor:pointer; font-weight:600;
   }
   .btn:hover{transform:translateY(-2px);}
-  .btn:disabled{opacity:0.35; cursor:not-allowed; transform:none;}
   .btn.primary{
-    background:var(--green); color:#020C08;
-    box-shadow:0 0 28px var(--green-glow);
+    background:var(--green); color:#020C08; box-shadow:0 0 28px var(--green-glow);
   }
   .btn.primary:hover{box-shadow:0 0 40px var(--green-glow-strong); background:#1df59b;}
   .btn.ghost{border:1px solid var(--line-soft); color:var(--ink-soft); background:rgba(12, 24, 38, 0.5); backdrop-filter:blur(12px);}
   .btn.ghost:hover{border-color:var(--green-dim); color:var(--ink); background:rgba(20, 241, 149, 0.05);}
 
-  .signature{
-    margin-top:52px; border:1px solid var(--line);
-    background:linear-gradient(180deg, rgba(12, 24, 38, 0.8) 0%, rgba(6, 14, 22, 0.9) 100%);
+  /* INTERACTIVE LIVE CANVAS PULSE CHART */
+  .chart-container{
+    margin-top:48px; border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(12, 24, 38, 0.85) 0%, rgba(6, 14, 22, 0.95) 100%);
     backdrop-filter:blur(16px); border-radius:12px; overflow:hidden;
     box-shadow:0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    position:relative;
   }
-  .signature .tag-row{
+  .chart-header{
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
     padding:16px 24px; border-bottom:1px solid var(--line);
     font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.06em;
   }
-  .signature .tag-row .dot-legend{display:flex; gap:18px; flex-wrap:wrap;}
-  .signature .tag-row .dot-legend span{display:flex; align-items:center; gap:8px;}
+  .chart-header .dot-legend{display:flex; gap:18px;}
+  .chart-header .dot-legend span{display:flex; align-items:center; gap:8px;}
   .legend-dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
-  .signature svg{display:block; width:100%; height:auto;}
+
+  .canvas-wrapper{position:relative; width:100%; height:220px; cursor:crosshair;}
+  canvas#pulseCanvas{display:block; width:100%; height:100%;}
   
-  .pulse-line{fill:none; stroke:var(--green); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 8px var(--green-glow));}
-  .pulse-spike{fill:none; stroke:var(--alert); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 8px var(--alert-glow));}
-  .gate-bar{fill:none; stroke:var(--green); stroke-width:2.5; stroke-dasharray:4 3; opacity:0.85;}
-  .flag{font-family:'IBM Plex Mono',monospace; font-size:9.5px; fill:var(--alert); font-weight:600;}
-  .flag-calm{fill:var(--green);}
+  .chart-tooltip{
+    position:absolute; pointer-events:none; display:none;
+    background:rgba(8, 18, 28, 0.95); border:1px solid var(--green-dim);
+    padding:8px 12px; border-radius:6px; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; color:var(--ink); box-shadow:0 8px 20px rgba(0,0,0,0.4);
+    z-index:10; backdrop-filter:blur(8px);
+  }
 
   section{padding:72px 32px; max-width:1080px; margin:0 auto; border-top:1px solid var(--line);}
   .section-head{display:flex; gap:16px; align-items:baseline; margin-bottom:32px;}
@@ -173,11 +176,10 @@
   .rpc-row input{
     flex:1; min-width:240px; background:var(--bg-alt); border:1px solid var(--line-soft); color:var(--ink);
     font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:12px 14px; border-radius:6px; outline:none;
-    transition:border-color 0.2s;
   }
   .rpc-row input:focus{border-color:var(--green-dim);}
   .demo-note{font-size:13.5px; color:var(--ink-soft); line-height:1.6; margin:0 0 16px;}
-  .demo-note a{color:var(--green-dim); text-decoration:none; border-bottom:1px stroke var(--green-dim);}
+  .demo-note a{color:var(--green-dim); text-decoration:none;}
 
   .tx-list{display:flex; flex-direction:column; gap:10px;}
   .tx-item{
@@ -201,50 +203,42 @@
   }
   .quote-result .big{color:var(--green); font-size:16px; font-weight:700;}
 
-  /* DYNAMIC GATE BOX WITH COOLDOWN PULSE */
   .gate-box{
     margin-top:16px; border:1px dashed var(--alert); background:var(--alert-glow);
     padding:16px 20px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--alert);
     display:none; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-radius:6px;
-    animation: pulseBorder 2s infinite;
-  }
-  @keyframes pulseBorder {
-    0% { box-shadow: 0 0 0 0 rgba(245,166,35,0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(245,166,35,0); }
-    100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); }
   }
   .gate-box.active{display:flex;}
 
-  /* PDA STATS GRID */
   .pda-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-top:14px;}
   @media(max-width:640px){.pda-grid{grid-template-columns:1fr;}}
   .pda-stat{
     border:1px solid var(--line-soft); background:var(--bg-alt); padding:18px; text-align:center; border-radius:8px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
   }
   .pda-stat .num{font-family:'IBM Plex Mono',monospace; font-size:22px; color:var(--green); font-weight:700;}
   .pda-stat .lbl{font-size:11.5px; color:var(--ink-soft); margin-top:6px; font-weight:500;}
 
-  /* MARQUEE TICKER FOR PARTNERS */
+  /* ACCURATE PARTNER LOGOS IN TICKER */
   .ticker-wrap{
     width:100%; overflow:hidden; background:var(--bg-alt); border:1px solid var(--line);
     padding:20px 0; border-radius:8px; margin-bottom:36px;
     mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
   }
-  .ticker-track{display:flex; gap:44px; width:max-content; animation: marquee 24s linear infinite;}
+  .ticker-track{display:flex; gap:36px; width:max-content; animation: marquee 26s linear infinite;}
   .ticker-track:hover{animation-play-state:paused;}
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  
   .partner-card{
-    display:flex; align-items:center; gap:12px; padding:12px 20px; border:1px solid var(--line-soft);
-    background:rgba(12, 24, 38, 0.7); border-radius:6px; font-size:13.5px; color:var(--ink);
+    display:flex; align-items:center; gap:12px; padding:12px 22px; border:1px solid var(--line-soft);
+    background:rgba(12, 24, 38, 0.75); border-radius:8px; font-size:14px; color:var(--ink);
     font-family:'Space Grotesk', sans-serif; font-weight:600; white-space:nowrap;
+    transition:all 0.2s ease;
   }
-  .partner-card svg{width:22px; height:22px; flex-shrink:0;}
+  .partner-card:hover{border-color:var(--green-dim); transform:scale(1.02);}
+  .partner-card .logo-icon{width:24px; height:24px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
 
-  .flow-item{
-    display:grid; grid-template-columns:48px 1fr; gap:18px; padding:22px 0; border-bottom:1px solid var(--line);
-  }
+  .flow-item{display:grid; grid-template-columns:48px 1fr; gap:18px; padding:22px 0; border-bottom:1px solid var(--line);}
   .flow-item:last-child{border-bottom:none;}
   .flow-num{font-family:'IBM Plex Mono',monospace; color:var(--green); font-size:14px; font-weight:600;}
   .flow-item h3{font-size:17px; margin-bottom:6px;}
@@ -271,7 +265,7 @@
 
 <nav>
   <a class="brand" href="#">
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
       <rect width="28" height="28" rx="6" fill="#0C1824" stroke="#1A2D42"/>
       <path d="M4 14 H8 L10 10 L12 14 L16 14" stroke="#14F195" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M16 14 L18 20 L20 8 L22 18 L24 14" stroke="#F5A623" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -297,29 +291,20 @@
     <a class="btn ghost" href="#partners">Partner with us</a>
   </div>
 
-  <div class="signature">
-    <div class="tag-row">
-      <span>WALLET · last 7 trades</span>
+  <!-- REALTIME ANIMATED INTERACTIVE PULSE CHART -->
+  <div class="chart-container">
+    <div class="chart-header">
+      <span>WALLET · Live Trade Stream</span>
       <span class="dot-legend">
-        <span><span class="legend-dot" style="background:var(--green)"></span>calm</span>
+        <span><span class="legend-dot" style="background:var(--green)"></span>calm trade</span>
         <span><span class="legend-dot" style="background:var(--alert)"></span>emotional pattern</span>
-        <span><span class="legend-dot" style="background:var(--green);opacity:0.5"></span>gate · pause</span>
+        <span><span class="legend-dot" style="background:#14F195; opacity:0.5;"></span>gate · pause</span>
       </span>
     </div>
-    <svg viewBox="0 0 1000 220" preserveAspectRatio="none">
-      <line x1="0" y1="110" x2="1000" y2="110" stroke="#1A2D42" stroke-width="1"/>
-      <path class="pulse-line" d="M0,110 L60,110 L90,90 L120,110 L180,110 L210,60 L240,110 L300,110"/>
-      <path class="pulse-spike" d="M300,110 L320,180 L345,40 L370,150 L400,110"/>
-      <line class="gate-bar" x1="400" y1="30" x2="400" y2="190"/>
-      <text x="330" y="200" class="flag">FOMO-BUY</text>
-      <path class="pulse-line" d="M400,110 L460,110 L490,95 L520,110 L580,110"/>
-      <text x="440" y="140" class="flag flag-calm">CALM</text>
-      <path class="pulse-spike" d="M580,110 L605,175 L630,55 L655,160 L690,110"/>
-      <line class="gate-bar" x1="690" y1="30" x2="690" y2="190"/>
-      <text x="600" y="200" class="flag">PANIC-SELL</text>
-      <path class="pulse-line" d="M690,110 L760,110 L790,92 L820,110 L880,110 L905,98 L935,110 L1000,110"/>
-      <text x="800" y="140" class="flag flag-calm">COOLDOWN 30s</text>
-    </svg>
+    <div class="canvas-wrapper" id="canvasWrap">
+      <canvas id="pulseCanvas"></canvas>
+      <div class="chart-tooltip" id="chartTooltip"></div>
+    </div>
   </div>
 </div>
 
@@ -457,52 +442,91 @@
   </div>
 </section>
 
+<!-- PARTNERSHIPS SECTION WITH ACCURATE BRAND LOGOS -->
 <section id="partners">
   <div class="section-head"><span class="idx mono">04</span><h2>Partnerships &amp; Ecosystem</h2></div>
   <p class="section-lead">PulseGate acts as a behavior and discipline layer across Solana DeFi protocols, wallet SDKs, and hackathon tracks.</p>
 
   <div class="ticker-wrap">
     <div class="ticker-track">
+      <!-- 1. JUPITER (Green Triangle Logo) -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#14F195" fill-opacity="0.2"/><path d="M8 20L16 8L24 20H8Z" fill="#14F195"/></svg>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 19H22L12 2Z" fill="#14F195"/>
+            <path d="M12 6L5 18H19L12 6Z" fill="#04090E"/>
+            <circle cx="12" cy="14" r="3" fill="#14F195"/>
+          </svg>
+        </div>
         Jupiter Swap Integration
       </div>
+
+      <!-- 2. PHANTOM (Ghost Logo) -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#AB9FF2" fill-opacity="0.2"/><path d="M10 12C10 8.68629 12.6863 6 16 6C19.3137 6 22 8.68629 22 12V22L19 20L16 22L13 20L10 22V12Z" fill="#AB9FF2"/></svg>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3C7.03 3 3 7.03 3 12V21L6.5 18.5L9.5 21L12 18.5L14.5 21L17.5 18.5L21 21V12C21 7.03 16.97 3 12 3Z" fill="#AB9FF2"/>
+            <circle cx="9" cy="10" r="1.5" fill="#04090E"/>
+            <circle cx="15" cy="10" r="1.5" fill="#04090E"/>
+          </svg>
+        </div>
         Phantom Wallet SDK
       </div>
+
+      <!-- 3. BACKPACK (Backpack Icon) -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#E42575" fill-opacity="0.2"/><rect x="9" y="11" width="14" height="13" rx="2" fill="#E42575"/><path d="M12 11V9C12 7.89543 12.8954 7 14 7H18C19.1046 7 20 7.89543 20 9V11" stroke="#E42575" stroke-width="2"/></svg>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="5" y="7" width="14" height="14" rx="3" fill="#E42575"/>
+            <path d="M9 7V5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7" stroke="#E42575" stroke-width="2"/>
+            <rect x="8" y="11" width="8" height="5" rx="1" fill="#04090E"/>
+          </svg>
+        </div>
         Backpack Wallet
       </div>
+
+      <!-- 4. SUPERTEAM UKRAINE (Flag) -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#FFD700" fill-opacity="0.2"/><path d="M10 10H22V15H10V10Z" fill="#0057B7"/><path d="M10 15H22V20H10V15Z" fill="#FFD700"/></svg>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="5" width="18" height="7" rx="1" fill="#0057B7"/>
+            <rect x="3" y="12" width="18" height="7" rx="1" fill="#FFD700"/>
+          </svg>
+        </div>
         Superteam Ukraine
       </div>
+
+      <!-- 5. COLOSSEUM (Colosseum Arch Logo) -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#F5A623" fill-opacity="0.2"/><path d="M12 9H20V23H12V9Z" stroke="#F5A623" stroke-width="2"/><path d="M8 13H24" stroke="#F5A623" stroke-width="2"/></svg>
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 19V9C4 6.23858 7.58172 4 12 4C16.4183 4 20 6.23858 20 9V19" stroke="#F5A623" stroke-width="2"/>
+            <path d="M2 19H22" stroke="#F5A623" stroke-width="2"/>
+            <path d="M8 12V19M12 11V19M16 12V19" stroke="#F5A623" stroke-width="1.5"/>
+          </svg>
+        </div>
         Colosseum Hackathon
       </div>
 
-      <!-- Duplicate for marquee -->
+      <!-- DUPLICATED ITEMS FOR INFINITE SCROLL -->
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#14F195" fill-opacity="0.2"/><path d="M8 20L16 8L24 20H8Z" fill="#14F195"/></svg>
+        <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 19H22L12 2Z" fill="#14F195"/><path d="M12 6L5 18H19L12 6Z" fill="#04090E"/><circle cx="12" cy="14" r="3" fill="#14F195"/></svg></div>
         Jupiter Swap Integration
       </div>
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#AB9FF2" fill-opacity="0.2"/><path d="M10 12C10 8.68629 12.6863 6 16 6C19.3137 6 22 8.68629 22 12V22L19 20L16 22L13 20L10 22V12Z" fill="#AB9FF2"/></svg>
+        <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3C7.03 3 3 7.03 3 12V21L6.5 18.5L9.5 21L12 18.5L14.5 21L17.5 18.5L21 21V12C21 7.03 16.97 3 12 3Z" fill="#AB9FF2"/><circle cx="9" cy="10" r="1.5" fill="#04090E"/><circle cx="15" cy="10" r="1.5" fill="#04090E"/></svg></div>
         Phantom Wallet SDK
       </div>
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#E42575" fill-opacity="0.2"/><rect x="9" y="11" width="14" height="13" rx="2" fill="#E42575"/><path d="M12 11V9C12 7.89543 12.8954 7 14 7H18C19.1046 7 20 7.89543 20 9V11" stroke="#E42575" stroke-width="2"/></svg>
+        <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="5" y="7" width="14" height="14" rx="3" fill="#E42575"/><path d="M9 7V5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7" stroke="#E42575" stroke-width="2"/><rect x="8" y="11" width="8" height="5" rx="1" fill="#04090E"/></svg></div>
         Backpack Wallet
       </div>
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#FFD700" fill-opacity="0.2"/><path d="M10 10H22V15H10V10Z" fill="#0057B7"/><path d="M10 15H22V20H10V15Z" fill="#FFD700"/></svg>
+        <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="7" rx="1" fill="#0057B7"/><rect x="3" y="12" width="18" height="7" rx="1" fill="#FFD700"/></svg></div>
         Superteam Ukraine
       </div>
       <div class="partner-card">
-        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#F5A623" fill-opacity="0.2"/><path d="M12 9H20V23H12V9Z" stroke="#F5A623" stroke-width="2"/><path d="M8 13H24" stroke="#F5A623" stroke-width="2"/></svg>
+        <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V9C4 6.23858 7.58172 4 12 4C16.4183 4 20 6.23858 20 9V19" stroke="#F5A623" stroke-width="2"/><path d="M2 19H22" stroke="#F5A623" stroke-width="2"/><path d="M8 12V19M12 11V19M16 12V19" stroke="#F5A623" stroke-width="1.5"/></svg></div>
         Colosseum Hackathon
       </div>
     </div>
@@ -553,6 +577,121 @@
 <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
 <script>
 (function(){
+  // --- REALTIME ANIMATED INTERACTIVE PULSE CHART ---
+  const canvas = document.getElementById('pulseCanvas');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('canvasWrap');
+  const tooltip = document.getElementById('chartTooltip');
+
+  let width = canvas.width = wrap.offsetWidth;
+  let height = canvas.height = wrap.offsetHeight;
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = wrap.offsetWidth;
+    height = canvas.height = wrap.offsetHeight;
+  });
+
+  // Animated ECG Line Data Points with Trade Events
+  let offset = 0;
+  const events = [
+    { xRatio: 0.15, label: 'BUY SOL', type: 'calm', details: '0.5 SOL · Normal interval' },
+    { xRatio: 0.35, label: 'FOMO-BUY', type: 'alert', details: '3.5 SOL · 30s after ATH (+380%)' },
+    { xRatio: 0.52, label: 'GATE PAUSE', type: 'gate', details: 'Cooldown 30s enforced' },
+    { xRatio: 0.72, label: 'PANIC-SELL', type: 'alert', details: '-18% dump · High frequency' },
+    { xRatio: 0.88, label: 'CALM STREAK', type: 'calm', details: 'Disciplined entry · +SPL reward' }
+  ];
+
+  function getPulseY(x) {
+    const mid = height / 2;
+    const waveX = (x + offset) % (width * 0.8);
+    
+    // Simulate Heartbeat/Spike Waveform
+    if (waveX > 100 && waveX < 115) return mid - 25;
+    if (waveX >= 115 && waveX < 130) return mid + 35;
+    if (waveX >= 130 && waveX < 150) return mid - 55;
+    if (waveX >= 150 && waveX < 170) return mid + 20;
+    
+    return mid + Math.sin(x * 0.02) * 3;
+  }
+
+  function drawPulseChart() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw Grid Background
+    ctx.strokeStyle = 'rgba(26, 45, 66, 0.3)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = 0; y < height; y += 30) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+
+    // Draw Animated Line
+    ctx.beginPath();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#14F195';
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(20, 241, 149, 0.5)';
+
+    for (let x = 0; x < width; x += 2) {
+      const y = getPulseY(x);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Draw Interactive Trade Event Markers
+    events.forEach(ev => {
+      const px = ev.xRatio * width;
+      const py = getPulseY(px);
+
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fillStyle = ev.type === 'alert' ? '#F5A623' : '#14F195';
+      ctx.fill();
+      ctx.strokeStyle = '#04090E';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Label Text
+      ctx.font = '10px "IBM Plex Mono"';
+      ctx.fillStyle = ev.type === 'alert' ? '#F5A623' : '#14F195';
+      ctx.fillText(ev.label, px - 20, py - 14);
+    });
+
+    offset += 0.8;
+    requestAnimationFrame(drawPulseChart);
+  }
+
+  drawPulseChart();
+
+  // Mouse Hover Interactive Tooltip
+  wrap.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    let found = false;
+    events.forEach(ev => {
+      const px = ev.xRatio * width;
+      const py = getPulseY(px);
+      const dist = Math.hypot(mouseX - px, mouseY - py);
+
+      if (dist < 18) {
+        found = true;
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${px + 10}px`;
+        tooltip.style.top = `${py - 30}px`;
+        tooltip.innerHTML = `<strong>${ev.label}</strong><br>${ev.details}`;
+      }
+    });
+
+    if (!found) tooltip.style.display = 'none';
+  });
+
+  // --- CONNECT & INTERACT LOGIC ---
   const connectBtn = document.getElementById('connectBtn');
   const disconnectBtn = document.getElementById('disconnectBtn');
   const walletStatus = document.getElementById('walletStatus');
